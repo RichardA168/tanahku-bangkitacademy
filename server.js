@@ -1,9 +1,17 @@
 const express = require('express');
 const mysql = require('mysql');
+const bcrypt = require('bcrypt');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+
+const corsOptions = {
+    origin: 'http://example.com',
+    optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 
 const db = mysql.createConnection({
@@ -14,20 +22,26 @@ const db = mysql.createConnection({
 })
 
 //api signup
-app.post('/signup', (req, res) => { // '/signup' -> misalnya
-    const sql = "INSERT INTO login (`name`, `email`, `password`) VALUES (?)";
-    const values = [
-        req.body.name,
-        req.body.email,
-        req.body.password
-    ]
-    db.query(sql, [values], (err, data) => {
-        if(err){
-            return res.json("error");
-        }
-        return res.json(data);
-    })
-})
+app.post('/signup', async (req, res) => { // '/signup' -> misalnya
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const sql = "INSERT INTO login (`name`, `email`, `password`) VALUES (?, ?, ?)";
+        const values = [
+            req.body.name,
+            req.body.email,
+            hashedPassword
+        ]
+        db.query(sql, values, (err, data) => {
+            if (err) {
+                return res.json("error");
+            }
+            return res.json(data);
+        })
+    } catch (error) {
+        console.error(error);
+        return res.json("error");
+    }
+});
 
 //api login
 app.post('/login', (req, res) => {
@@ -48,8 +62,8 @@ app.post('/login', (req, res) => {
         }
         // return res.json(data);
     })
-})
+});
 
-app.listen(8081, () => {
+app.listen(8080, () => {
     console.log("Node berhasil dinyalakan!");
 })
