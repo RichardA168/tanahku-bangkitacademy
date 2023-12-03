@@ -37,7 +37,7 @@ app.post('/signup', async (req, res) => { // '/signup' -> misalnya
             }
             return res.json(data);
         })
-    } catch (error) {
+    } catch  {
         console.error(error);
         return res.json("error");
     }
