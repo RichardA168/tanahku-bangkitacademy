@@ -14,7 +14,7 @@ const db = mysql.createConnection({
 })
 
 //api signup
-app.post('/signup', (req, res) => { // '/signup' -> misalnya
+app.post('', (req, res) => { // '/signup' -> misalnya
     const sql = "INSERT INTO login (`name`, `email`, `password`) VALUES (?)";
     const values = [
         req.body.name,
@@ -30,7 +30,7 @@ app.post('/signup', (req, res) => { // '/signup' -> misalnya
 })
 
 //api login
-app.post('/login', (req, res) => {
+app.post('', (req, res) => {
     const sql = "SELECT * FROM login WHERE `email` = ? AND `password` = ?";
     // const values = [
     //     req.body.name,
@@ -50,6 +50,6 @@ app.post('/login', (req, res) => {
     })
 })
 
-app.listen(8081, () => {
+app.listen(3000, () => {
     console.log("Node berhasil dinyalakan!");
 })
